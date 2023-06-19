@@ -4,31 +4,31 @@ Copyright © 2023 Derek Worthen <worthend.derek@gmail.com>
 package cmd
 
 import (
-	"os"
+	_ "embed"
 
+	"github.com/dworthen/goscripty/generators"
 	"github.com/spf13/cobra"
 )
 
-// genCmd represents the gen command
-var genCmd = &cobra.Command{
-	Use:   "gen",
-	Short: "Generate install scripts",
-	Long:  `Generate install scripts`,
+// githubCmd represents the github command
+var githubCmd = &cobra.Command{
+	Use:   "github",
+	Short: "Generate install scripts for github artifacts",
+	Long:  `Generate install scripts for github artifacts`,
 	Run: func(cmd *cobra.Command, args []string) {
-		rootCmd.Help()
-		os.Exit(1)
+		generators.GenerateGithubInstallers()
 	},
 }
 
 func init() {
-	genCmd.AddCommand(githubCmd)
+
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// genCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// githubCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// genCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// githubCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
