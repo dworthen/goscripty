@@ -2,29 +2,27 @@
 
 set -euo pipefail
 
-archive={{archiveName}}
-repoUrl=https://github.com/dworthen/goclitest
+archive={{.archiveName}}
+repoUrl={{.repoUrl}}
 releasesUrl=$repoUrl/releases
 downloadUrl=$releasesUrl/download/TAG/$archive
 
 
-declare -A platformDict=(
-    {{platformMap}}
+declare -A platformDict=({{.platformDict}}
     # ["Linux"]="Linux"
     # ["Darwin"]="Darwin"
 )
 
-declare -A archDict=(
-    {{archMap}}
+declare -A archDict=({{.archDict}}
     # ["x86_64"]="x86_64"
 )
 
 help() {
   cat <<'EOF'
-Install a binary release of a {{binaryName}} hosted on GitHub
+Install a binary release of a binary hosted on GitHub
 
 USAGE:
-    {{binaryName}} [options]
+    install [options]
 
 FLAGS:
     -h, --help      Display this message
