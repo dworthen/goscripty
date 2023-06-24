@@ -2,18 +2,18 @@
 
 set -euo pipefail
 
-archive={{.archiveName}}
-repoUrl={{.repoUrl}}
+archive={{.ArchiveName}}
+repoUrl={{.RepoUrl}}
 releasesUrl=$repoUrl/releases
-downloadUrl=$releasesUrl/download/TAG/$archive
+downloadUrl=$releasesUrl/download/{TAG}/$archive
 
 
-declare -A platformDict=({{.platformDict}}
+declare -A platformDict=({{.LinuxPlatformDict}}
     # ["Linux"]="Linux"
     # ["Darwin"]="Darwin"
 )
 
-declare -A archDict=({{.archDict}}
+declare -A archDict=({{.LinuxArchDict}}
     # ["x86_64"]="x86_64"
 )
 
@@ -122,10 +122,12 @@ else
     arch=${archDict[$arch]}
 fi
 
-downloadUrl=$(echo $downloadUrl | 
-    sed -E "s/PLATFORM/${platform}/g" |
-    sed -E "s/ARCH/${arch}/g" |
-    sed -E "s/TAG/${tag}/g"
+downloadUrl=$(echo $downloadUrl |
+    sed -E "s/\{PLATFORM\}/${platform}/g" |
+    sed -E "s/\{ARCH\}/${arch}/g" |
+    sed -E "s/\{TAG\}/${tag}/g" |
+    sed -E "s/\{ARCHIVE_EXT\}/.tar.gz/g" |
+    sed -E "s/\{BINARY_EXT\}//g"
 )
 
 say_err "Downloading $downloadUrl"
@@ -136,7 +138,7 @@ say_err "Temp dir: $td"
 
 if [[ $downloadUrl = *.tar.gz ]]; then
     curl -sSL $downloadUrl | tar -C $td -xz
-else 
+else
     curl -sSL: $downloadUrl -O $td
 fi
 

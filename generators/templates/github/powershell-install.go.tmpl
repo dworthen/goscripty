@@ -102,12 +102,12 @@ if((Test-Path $to) -and (-Not (Test-Path $to -PathType Container))) {
   throw "${to} exists and is not a directory."
 }
 
-$archive="{{archiveName}}"
-$repoUrl="{{.repoUrl}}"
+$archive="{{.ArchiveName}}"
+$repoUrl="{{.RepoUrl}}"
 $releasesUrl="${repoUrl}/releases"
-$downloadUrl="${releasesUrl}/download/TAG/${archive}"
+$downloadUrl="${releasesUrl}/download/{TAG}/${archive}"
 $platformKey = "Windows"
-$archKey = "windows_$([Environment]::GetEnvironmentVariable('PROCESSOR_ARCHITECTURE'))"
+$archKey = [Environment]::GetEnvironmentVariable('PROCESSOR_ARCHITECTURE')
 $tempLocation = [Environment]::GetEnvironmentVariable('TEMP')
 
 do {
@@ -116,11 +116,11 @@ do {
 } while (Test-Path $tempDir)
 
 
-$platformDict = @{ {{.platformDict}}
+$platformDict = @{ {{.WindowsPlatformDict}}
   # Windows = "Windows"
 }
 
-$archDict = @{ {{.archDict }}
+$archDict = @{ {{.WindowsArchDict }}
   # windows_AMD64 = "x86_64"
 }
 
@@ -144,21 +144,25 @@ if (-Not ($archDict.ContainsKey($archKey))) {
 }
 
 $downloadUrl = $downloadUrl.
-  replace("PLATFORM", $platform).
-  replace("ARCH", $arch).
-  replace("TAG", $tag)
+  replace("{PLATFORM}", $platform).
+  replace("{ARCH}", $arch).
+  replace("{TAG}", $tag).
+  replace("{ARCHIVE_EXT}", ".zip").
+  replace("{BINARY_EXT}", ".exe")
 
 
 $(New-Item -ItemType Directory $tempDir) > $null
 
 if ($downloadUrl.EndsWith(".zip")) {
   $(curl -sSfL "${downloadUrl}" -o "${tempDir}/download.zip")
+  checkError "curl ${downloadUrl}"
   $(Expand-Archive -Path "${tempDir}/download.zip" -DestinationPath $tempDir)
+  checkError "Expand-Archive ${tempDir}/download.zip"
   Remove-Item "${tempDir}/download.zip" -force
 }
 
 if (-Not (Test-Path $to -PathType Container)) {
-  New-Item $to -ItemType Directory
+  $(New-Item $to -ItemType Directory) > $null
 }
 
 $contents = Get-ChildItem "${tempDir}/*" -Recurse
