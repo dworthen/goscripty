@@ -1,0 +1,35 @@
+# https://taskfile.dev
+
+version: "3"
+
+tasks:
+  build:
+    cmds:
+      - goreleaser build --snapshot --single-target --clean
+
+  build-all:
+    cmds:
+      - goreleaser build --clean
+
+  release:
+    cmds:
+      - goreleaser release --clean
+
+  format:
+    cmds:
+      - gofmt -l -w .
+
+  lint:
+    cmds:
+      - golangci-lint run
+
+  git-is-clean:
+    internal: true
+    cmds:
+      - echo "if [ ! -z \"$(git status --porcelain)\" ]; then exit 1; fi" | bash
+
+  ci-check:
+    cmds:
+      - task: format
+      - task: lint
+      - task: git-is-clean

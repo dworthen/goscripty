@@ -147,7 +147,10 @@ func writeTemplate(variables *PromptVariables, templateString string, scriptName
 	}
 
 	dest := filepath.Join(variables.Destination, scriptName)
-	os.WriteFile(dest, []byte(buf.String()), 0755)
+	if err := os.WriteFile(dest, buf.Bytes(), 0755); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
 
 func promptMessage(message string, defaultValue string, required bool) string {

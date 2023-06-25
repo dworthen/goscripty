@@ -4,6 +4,7 @@ Copyright © 2023 Derek Worthen <worthend.derek@gmail.com>
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -11,11 +12,15 @@ import (
 
 // genCmd represents the gen command
 var genCmd = &cobra.Command{
-	Use:   "gen",
-	Short: "Generate install scripts",
-	Long:  `Generate install scripts`,
+	Use:     "gen",
+	Aliases: []string{"generate"},
+	Short:   "Generate install scripts",
+	Long:    `Generate install scripts`,
 	Run: func(cmd *cobra.Command, args []string) {
-		rootCmd.Help()
+		if err := rootCmd.Help(); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 		os.Exit(1)
 	},
 }
