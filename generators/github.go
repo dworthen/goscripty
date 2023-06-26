@@ -128,6 +128,8 @@ func GenerateGithubInstallers() {
 	variables := NewPromptVariables()
 	variables.Validate()
 
+	os.MkdirAll(variables.Destination, 0744)
+
 	writeTemplate(variables, bashTemplate, "install.sh")
 	writeTemplate(variables, pwshTemplate, "install.ps1")
 }
