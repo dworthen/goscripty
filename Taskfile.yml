@@ -3,33 +3,30 @@
 version: "3"
 
 tasks:
-  build:
+  tidy:
     cmds:
-      - goreleaser build --snapshot --single-target --clean
+      - go mod tidy
 
-  build-all:
+  format-check:
     cmds:
-      - goreleaser build --clean
-
-  release:
-    cmds:
-      - goreleaser release --clean
+      - goimports -e -l .
 
   format:
     cmds:
-      - gofmt -l -w .
+      - goimports -w .
 
   lint:
     cmds:
       - golangci-lint run
 
-  git-is-clean:
-    internal: true
+  build-dev:
     cmds:
-      - echo "if [ ! -z \"$(git status --porcelain)\" ]; then exit 1; fi" | bash
+      - go build -o ./bin/scripty .
 
-  ci-check:
+  build:
     cmds:
-      - task: format
-      - task: lint
-      - task: git-is-clean
+      - goreleaser build --snapshot --clean
+
+  run:
+    cmds:
+      - go run ./main.go {{.CLI_ARGS}}

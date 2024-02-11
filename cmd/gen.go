@@ -1,6 +1,3 @@
-/*
-Copyright © 2023 Derek Worthen <worthend.derek@gmail.com>
-*/
 package cmd
 
 import (
