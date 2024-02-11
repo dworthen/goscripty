@@ -7,7 +7,7 @@ before:
     - go generate ./...
 builds:
   - id: scripty
-    binary: scf
+    binary: scripty
     env:
       - CGO_ENABLED=0
     goos:
